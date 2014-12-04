@@ -15,9 +15,9 @@ ifndef LDSCRIPT
 LDSCRIPT = $(OBJECTDIR)/tiva-c.ld
 endif # LDSCRIPT
 
-CFLAGS += -O2 -mcpu=cortex-m4 -mthumb -mlittle-endian
+CFLAGS += -Os -mcpu=cortex-m4 -mthumb -mlittle-endian
 CFLAGS += -fshort-enums -fomit-frame-pointer -fno-strict-aliasing
-CFLAGS += -Wall -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
+CFLAGS += -Wall -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 LDFLAGS += -mcpu=cortex-m4 -mthumb -nostartfiles
 LDFLAGS += -T $(LDSCRIPT)
 LDFLAGS += -Wl,-Map=contiki-$(TARGET).map,--cref,--no-warn-mismatch
