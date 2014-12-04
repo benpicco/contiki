@@ -1,0 +1,85 @@
+# Tiva C port Makefile
+
+CC = arm-none-eabi-gcc
+CPP = arm-none-eabi-cpp
+LD = arm-none-eabi-gcc
+AR = arm-none-eabi-ar
+OC = arm-none-eabi-objcopy
+SIZE = arm-none-eabi-size
+
+ifdef WERROR
+CFLAGS+=-Werror
+endif
+
+ifndef LDSCRIPT
+LDSCRIPT = $(OBJECTDIR)/tiva-c.ld
+endif # LDSCRIPT
+
+CFLAGS += -O2 -mcpu=cortex-m4 -mthumb -mlittle-endian
+CFLAGS += -fshort-enums -fomit-frame-pointer -fno-strict-aliasing
+CFLAGS += -Wall -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
+LDFLAGS += -mcpu=cortex-m4 -mthumb -nostartfiles
+LDFLAGS += -T $(LDSCRIPT)
+LDFLAGS += -Wl,-Map=contiki-$(TARGET).map,--cref,--no-warn-mismatch
+OCFLAGS += -O binary --gap-fill 0xff
+
+### Are we building with code size optimisations?
+ifeq ($(SMALL),1)
+  CFLAGS += -ffunction-sections -fdata-sections
+  LDFLAGS += -Wl,--gc-sections
+endif
+
+### If the user-specified a Node ID, pass a define
+ifdef NODEID
+  CFLAGS += -DIEEE_ADDR_NODE_ID=$(NODEID)
+endif
+
+### CPU-dependent cleanup files
+CLEAN += symbols.c symbols.h *.d *.elf
+
+### CPU-dependent directories
+CONTIKI_CPU_DIRS = . dev ./dev/tivaware ./dev/tivaware/driverlib ./dev/tivaware/inc
+
+### Use the existing debug I/O in cpu/arm/common
+CONTIKI_CPU_DIRS += ../arm/common/dbg-io
+
+### CPU-dependent source files
+CONTIKI_CPU_SOURCEFILES += clock.c rtimer-arch.c cpu.c lpm.c
+CONTIKI_CPU_SOURCEFILES += sys-ctrl.c uart.c gpio.c spi.c watchdog.c
+CONTIKI_CPU_SOURCEFILES += tm4c_flash.c tm4c_gpio.c tm4c_hibernate.c tm4c_interrupt.c tm4c_watchdog.c
+CONTIKI_CPU_SOURCEFILES += tm4c_sysctl.c tm4c_systick.c tm4c_timer.c tm4c_uart.c tm4c_ssi.c tm4c_fpu.c
+CONTIKI_CPU_SOURCEFILES += dbg.c
+UIPDRIVERS += slip-arch.c slip.c
+UIPDRIVERS += me.c me_tabs.c crc16.c
+
+### Only used in tiva-c 129x.
+CONTIKI_CPU_SOURCEFILES += tm4c_emac.c tm4c_sw_crc.c
+
+
+DEBUG_IO_SOURCEFILES += dbg-printf.c dbg-snprintf.c dbg-sprintf.c strformat.c
+
+CONTIKI_SOURCEFILES += $(CONTIKI_CPU_SOURCEFILES) $(DEBUG_IO_SOURCEFILES) $(UIPDRIVERS)
+
+### Don't treat the .$(TARGET) as intermediate
+.PRECIOUS: %.$(TARGET)
+
+### Always re-build ieee-addr.o in case the command line passes a new NODEID
+FORCE:
+
+$(OBJECTDIR)/ieee-addr.o: ieee-addr.c FORCE
+	$(CC) $(CFLAGS) -c $< -o $@
+
+### Compilation rules
+CUSTOM_RULE_LINK=1
+
+%.$(TARGET): $(TARGET_STARTFILES) %.co $(PROJECT_OBJECTFILES) $(PROJECT_LIBRARIES) contiki-$(TARGET).a $(LDSCRIPT)
+	$(LD) $(LDFLAGS) ${filter-out $(LDSCRIPT) %.a,$^} ${filter %.a,$^} -o $@
+
+%.bin: %.$(TARGET)
+	$(OC) $(OCFLAGS) $< $@
+	$(SIZE) $<
+
+### This rule used to generate the correct linker script, depending on whether
+### we want to use the SRAM non-retention area
+$(LDSCRIPT): $(CONTIKI_CPU)/tiva-c.lds
+	$(CPP) -P -E $< -o $@
