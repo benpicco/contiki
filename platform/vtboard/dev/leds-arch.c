@@ -56,21 +56,20 @@
 #include "tivaware/driverlib/tm4c_sysctl.h"
 
 /* LED mask only allows for D3 and D4 to be used as general purpose LEDs */
-#define LED_GPIO_DATA_MASK  (GPIO_PIN_0 | GPIO_PIN_1)
+#define LED_GPIO_DATA_MASK  (GPIO_PIN_6 | GPIO_PIN_7)
 /*---------------------------------------------------------------------------*/
 void
 leds_arch_init(void)
 { 
   /* Turn on GPIO clock for peripheral controlling RGB LED and D1 */
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
   
   /* Configure pins as general purpose outputs */
-  GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
-  GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_2);
-  GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3);
+  GPIOPinTypeGPIOOutput(GPIO_PORTC_BASE, GPIO_PIN_6);
+  GPIOPinTypeGPIOOutput(GPIO_PORTC_BASE, GPIO_PIN_7);
   
   /* Turn LEDs off */
-  leds_off(LEDS_D1_RED | LEDS_D1_GREEN | LEDS_D1_BLUE);
+  leds_off(LEDS_D1_RED | LEDS_D1_GREEN);
 }
 /*---------------------------------------------------------------------------*/
 unsigned char
@@ -79,13 +78,10 @@ leds_arch_get(void)
   uint32_t temp = 0;
     
   /* Read D1 red */
-  temp |= GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_1) >> 1;
+  temp |= GPIOPinRead(GPIO_PORTC_BASE, GPIO_PIN_6) >> 1;
   
   /* Read D1 green */
-  temp |= GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_3) >> 2;
-  
-  /* Read D1 blue */
-  temp |= GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_2);
+  temp |= GPIOPinRead(GPIO_PORTC_BASE, GPIO_PIN_7) >> 2;
   
   return temp;
 }
@@ -94,16 +90,12 @@ void
 leds_arch_set(unsigned char leds)
 {  
   /* Write D1 red */
-  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 
-              (leds & LEDS_D1_RED) ? GPIO_PIN_1 : 0);  
+  GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_6, 
+              (leds & LEDS_D1_RED) ? GPIO_PIN_6 : 0);  
               
   /* Write D1 green */
-  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 
-              (leds & LEDS_D1_GREEN) ? GPIO_PIN_3 : 0);   
-              
-  /* Write D1 blue */
-  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 
-              (leds & LEDS_D1_BLUE) ? GPIO_PIN_2 : 0);              
+  GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_7, 
+              (leds & LEDS_D1_GREEN) ? GPIO_PIN_7 : 0);        
 }
 /*---------------------------------------------------------------------------*/
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006, Swedish Institute of Computer Science.
+ * Copyright (c) 2008, Swedish Institute of Computer Science
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,15 +28,52 @@
  *
  * This file is part of the Contiki operating system.
  *
- * Author  : Adam Dunkels
  */
 
-#ifndef DUTY_CYCLE_SCROLLER_H
-#define DUTY_CYCLE_SCROLLER_H
+/**
+ * \file
+ *	Coffee architecture-dependent header for the Tmote Sky platform.
+ * \author
+ * 	Nicolas Tsiftes <nvt@sics.se>
+ */
 
-#include "sys/clock.h"
+#ifndef CFS_COFFEE_ARCH_H
+#define CFS_COFFEE_ARCH_H
 
-void duty_cycle_scroller_start(clock_time_t interval);
-void duty_cycle_scroller_stop(void);
+#include "contiki-conf.h"
+#include "dev/xmem.h"
 
-#endif /* DUTY_CYCLE_SCROLLER_H */
+/* Coffee configuration parameters. */
+#define COFFEE_SECTOR_SIZE		65536UL
+#define COFFEE_PAGE_SIZE		256UL
+#define COFFEE_START			COFFEE_SECTOR_SIZE
+#define COFFEE_SIZE			(1024UL * 1024UL - COFFEE_START)
+#define COFFEE_NAME_LENGTH		16
+#define COFFEE_MAX_OPEN_FILES		6
+#define COFFEE_FD_SET_SIZE		8
+#define COFFEE_LOG_TABLE_LIMIT		256
+#ifdef COFFEE_CONF_DYN_SIZE
+#define COFFEE_DYN_SIZE			COFFEE_CONF_DYN_SIZE
+#else
+#define COFFEE_DYN_SIZE     4*1024
+#endif
+#define COFFEE_LOG_SIZE			1024
+
+#define COFFEE_IO_SEMANTICS		1
+#define COFFEE_APPEND_ONLY		0
+#define COFFEE_MICRO_LOGS		1
+
+/* Flash operations. */
+#define COFFEE_WRITE(buf, size, offset)				\
+		xmem_pwrite((char *)(buf), (size), COFFEE_START + (offset))
+
+#define COFFEE_READ(buf, size, offset)				\
+  		xmem_pread((char *)(buf), (size), COFFEE_START + (offset))
+
+#define COFFEE_ERASE(sector)					\
+  		xmem_erase(COFFEE_SECTOR_SIZE, COFFEE_START + (sector) * COFFEE_SECTOR_SIZE)
+
+/* Coffee types. */
+typedef int16_t coffee_page_t;
+
+#endif /* !COFFEE_ARCH_H */

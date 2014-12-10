@@ -76,6 +76,7 @@
 #include "net/mac/frame802154.h"
 #include "net/netstack.h"
 #include "net/rime/rime.h"
+#include "net/rpl/rpl.h"
 #include "sys/autostart.h"
 
 #include "node-id.h"
@@ -117,7 +118,8 @@ uint32_t state = 0;
 
 static struct etimer et;
 
-//SENSORS(&button_sensor);
+SENSORS(&button_sensor);
+
 /*---------------------------------------------------------------------------*/
 #ifndef RF_CHANNEL
 #define RF_CHANNEL              10
@@ -147,6 +149,51 @@ set_rime_addr(void)
     printf("%u.", addr.u8[i]);
   }
   printf("%u\n", addr.u8[i]);
+}
+
+void splx(int saved) {
+  ;
+}
+
+int splhigh(void) {
+  return 0;
+}
+
+void GPIOPinUnlockGPIO(uint32_t ui32Port, uint8_t ui8Pins) {
+  HWREG(ui32Port + GPIO_O_LOCK) = GPIO_LOCK_KEY;    // Unlock the port
+  HWREG(ui32Port + GPIO_O_CR) |= ui8Pins;       // Unlock the Pin
+  HWREG(ui32Port + GPIO_O_LOCK) = 0;          // Lock the port
+}
+
+void cc2520_arch_init(void) {
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+
+  GPIOPinUnlockGPIO(GPIO_PORTD_BASE, GPIO_PIN_7);
+  GPIOPinUnlockGPIO(GPIO_PORTF_BASE, GPIO_PIN_0);
+
+  GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3);
+
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI1);
+
+  GPIOPinConfigure(GPIO_PF0_SSI1RX);
+  GPIOPinConfigure(GPIO_PF1_SSI1TX);
+  GPIOPinConfigure(GPIO_PF2_SSI1CLK);
+
+  GPIOPinTypeSSI(GPIO_PORTF_BASE, GPIO_PIN_2 | GPIO_PIN_1| GPIO_PIN_0);
+
+  SSIConfigSetExpClk(SSI1_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
+
+  SSIEnable(SSI1_BASE);
+
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+  GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_0);
+  GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_1);
+  GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_2);
+  GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_3);
+
+  GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, PIN(6) | PIN(7));
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -348,7 +395,7 @@ main(void)
   energest_init();
   ENERGEST_ON(ENERGEST_TYPE_CPU);
 
-  rpl_init();
+//  rpl_init();
   /*Watch dog configuration*/
   watchdog_periodic();
   watchdog_start();

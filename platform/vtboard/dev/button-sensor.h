@@ -50,8 +50,7 @@
 
 #define BUTTON_SENSOR "Button"
 
-extern const struct sensors_sensor button_sw1_sensor;
-extern const struct sensors_sensor button_sw2_sensor;
+extern const struct sensors_sensor button_sensor;
 /*---------------------------------------------------------------------------*/
 #endif /* BUTTON_SENSOR_H_ */
 

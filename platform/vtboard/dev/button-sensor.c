@@ -40,6 +40,9 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "lib/sensors.h"
+#include "dev/button-sensor.h"
+
 #include "contiki.h"
 
 #include "dev/gpio.h"
@@ -102,11 +105,11 @@ btn_callback(uint8_t port, uint8_t pin)
   
   if((port == GPIO_F_NUM) && (pin == BUTTON_SW1_PIN_NO)) {
       printf("SW1\n");
-      sensors_changed(&button_sw1_sensor);
+      sensors_changed(&button_sensor);
   }
   else if((port == GPIO_F_NUM) && (pin == BUTTON_SW2_PIN_NO)) {
       printf("SW2\n");
-      sensors_changed(&button_sw2_sensor);
+      sensors_changed(&button_sensor);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -175,7 +178,6 @@ button_sensor_init()
   timer_set(&debouncetimer, 0);
 }
 /*---------------------------------------------------------------------------*/
-SENSORS_SENSOR(button_sw1_sensor, BUTTON_SENSOR, NULL, config_sw1, NULL);
-SENSORS_SENSOR(button_sw2_sensor, BUTTON_SENSOR, NULL, config_sw2, NULL);
+SENSORS_SENSOR(button_sensor, BUTTON_SENSOR, NULL, config_sw1, NULL);
 
 /** @} */

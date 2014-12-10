@@ -45,7 +45,7 @@ CONTIKI_CPU_DIRS += ../arm/common/dbg-io
 
 ### CPU-dependent source files
 CONTIKI_CPU_SOURCEFILES += clock.c rtimer-arch.c cpu.c lpm.c
-CONTIKI_CPU_SOURCEFILES += sys-ctrl.c uart.c gpio.c spi.c watchdog.c
+CONTIKI_CPU_SOURCEFILES += sys-ctrl.c uart.c gpio.c watchdog.c
 CONTIKI_CPU_SOURCEFILES += tm4c_flash.c tm4c_gpio.c tm4c_hibernate.c tm4c_interrupt.c tm4c_watchdog.c
 CONTIKI_CPU_SOURCEFILES += tm4c_sysctl.c tm4c_systick.c tm4c_timer.c tm4c_uart.c tm4c_ssi.c tm4c_fpu.c
 CONTIKI_CPU_SOURCEFILES += dbg.c

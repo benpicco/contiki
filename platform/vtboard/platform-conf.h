@@ -16,6 +16,15 @@
 #define HAVE_STDINT_H
 #include "board.h"
 
+#define CONCAT2(a, b)		(a##b)
+#define CONCAT3(a, b, c)	(a##b##c)
+#define PORT(port)			CONCAT3(GPIO_PORT, port, _BASE)
+#define PIN(pin) 			CONCAT2(GPIO_PIN_, pin)
+#define PERIPH(port)		CONCAT2(SYSCTL_PERIPH_, port)
+#define PERIPH_GPIO(port)	CONCAT2(SYSCTL_PERIPH_GPIO, port)
+
+#define BASE(module) 		CONCAT2(module, _BASE)
+
 /* Types for clocks and uip_stats */
 typedef unsigned short uip_stats_t;
 typedef unsigned long clock_time_t;
@@ -42,43 +51,75 @@ typedef unsigned long clock_time_t;
 
 #define CFS_RAM_CONF_SIZE 4096
 
+
 /*
- * SPI bus configuration
+ * SPI bus configuration for the vtboard
  */
 
+#define SPI_BASE  SSI1_BASE
+
+#define GPIO_PIN_REG(port, pin)	(HWREG(port + (GPIO_O_DATA + (pin << 2))))
+
 /* SPI input/output registers. */
-//#define SPI_TXBUF UCB0TXBUF
-//#define SPI_RXBUF UCB0RXBUF
+#define SPI_TXBUF HWREG(SPI_BASE + SSI_O_DR)
+#define SPI_RXBUF HWREG(SPI_BASE + SSI_O_DR)
 
-                                /* USART0 Tx ready? */
-//#define SPI_WAITFOREOTx() while ((UCB0STAT & UCBUSY) != 0)
-                                /* USART0 Rx ready? */
-//#define SPI_WAITFOREORx() while ((UCB0IFG & UCRXIFG) == 0)
-                                /* USART0 Tx buffer ready? */
-//#define SPI_WAITFORTxREADY() while ((UCB0IFG & UCTXIFG) == 0)
+/* USART0 Tx ready? */
+#define SPI_WAITFOREOTx()		while((HWREG(SPI_BASE + SSI_O_SR) & SSI_SR_BSY))
+/* USART0 Rx ready? */
+#define SPI_WAITFOREORx()		while(!(HWREG(SPI_BASE + SSI_O_SR) & SSI_SR_RNE))
+/* USART0 Tx buffer ready? */
+#define SPI_WAITFORTxREADY()	while(!(HWREG(SPI_BASE + SSI_O_SR) & SSI_SR_TNF))
+/* Clear Rx buffer */
+#define SPI_FLUSH()				while((HWREG(SPI_BASE + SSI_O_SR) & SSI_SR_RNE)) { SPI_RXBUF; }
 
-//#define MOSI           1  /* P3.1 - Output: SPI Master out - slave in (MOSI) */
-//#define MISO           2  /* P3.2 - Input:  SPI Master in - slave out (MISO) */
-//#define SCK            3  /* P3.3 - Output: SPI Serial Clock (SCLK) */
+/*
+ * SPI bus - CC2520 pin configuration.
+ */
 
-// #define CC11xx_CC1120           1
-#define CC11xx_ARCH_SPI_ENABLE  cc1120_arch_spi_enable
-#define CC11xx_ARCH_SPI_DISABLE cc1120_arch_spi_disable
-#define CC11xx_ARCH_SPI_RW_BYTE cc1120_arch_spi_rw_byte
-#define CC11xx_ARCH_SPI_RW      cc1120_arch_spi_rw
+#define CC2520_CONF_SYMBOL_LOOP_COUNT 2604      /* 326us msp430X @ 16MHz */
 
-#define cc11xx_arch_spi_enable  cc1120_arch_spi_enable
-#define cc11xx_arch_spi_disable cc1120_arch_spi_disable
-#define cc11xx_arch_spi_rw_byte cc1120_arch_spi_rw_byte
-#define cc11xx_arch_spi_rw      cc1120_arch_spi_rw
-#define cc11xx_arch_interrupt_enable cc1120_arch_interrupt_enable
+/* Pin status.CC2520 */
+#define CC2520_FIFOP_IS_1 (!!(GPIO_PIN_REG(PORT(E), PIN(2))))
+#define CC2520_FIFO_IS_1  (!!(GPIO_PIN_REG(PORT(E), PIN(1))))
+#define CC2520_CCA_IS_1   (!!(GPIO_PIN_REG(PORT(E), PIN(3))))
+#define CC2520_SFD_IS_1   (!!(GPIO_PIN_REG(PORT(E), PIN(3))))
 
-#define cc11xx_arch_init        cc1120_arch_init
+/* The CC2520 reset pin. */
+#define SET_RESET_INACTIVE()   (GPIO_PIN_REG(PORT(D), PIN(6)) = PIN(6))
+#define SET_RESET_ACTIVE()     (GPIO_PIN_REG(PORT(D), PIN(6)) = 0)
+
+/* CC2520 voltage regulator enable pin. */
+#define SET_VREG_ACTIVE()       (GPIO_PIN_REG(PORT(D), PIN(7)) = PIN(7))
+#define SET_VREG_INACTIVE()     (GPIO_PIN_REG(PORT(D), PIN(7)) = 0)
+
+/* CC2520 rising edge trigger for external interrupt 0 (FIFOP). */
+#define CC2520_FIFOP_INT_INIT() do {                  \
+    GPIOIntTypeSet(PORT(E), PIN(2), GPIO_RISING_EDGE);  \
+    IntEnable(INT_GPIOE);                         \
+  } while(0)
+
+/* FIFOP on external interrupt 0. */
+/* FIFOP on external interrupt 0. */
+#define CC2520_ENABLE_FIFOP_INT()          do { HWREG(PORT(E) + GPIO_O_IM) |= PIN(2); } while (0)
+#define CC2520_DISABLE_FIFOP_INT()         do { HWREG(PORT(E) + GPIO_O_IM) &= ~PIN(2); } while (0)
+#define CC2520_CLEAR_FIFOP_INT()           do { HWREG(PORT(E) + GPIO_O_ICR) = PIN(2); } while (0)
+
+/*
+ * Enables/disables CC2520 access to the SPI bus (not the bus).
+ * (Chip Select)
+ */
+
+ /* ENABLE CSn (active low) */
+#define CC2520_SPI_ENABLE()     do { SPI_FLUSH(); GPIO_PIN_REG(PORT(F), PIN(3)) = 0; } while (0)
+ /* DISABLE CSn (active low) */
+#define CC2520_SPI_DISABLE()    do { SPI_WAITFOREOTx(); GPIO_PIN_REG(PORT(F), PIN(3)) = PIN(3); } while(0)
+#define CC2520_SPI_IS_ENABLED() GPIOPinRead(PORT(F), PIN(3))
 
 #define NULLRDC_CONF_ACK_WAIT_TIME                RTIMER_SECOND / 500
 #define NULLRDC_CONF_AFTER_ACK_DETECTED_WAIT_TIME RTIMER_SECOND / 250
 
-// #define NETSTACK_CONF_RADIO   cc11xx_driver
+#define NETSTACK_CONF_RADIO   cc2520_driver
 #define NETSTACK_RADIO_MAX_PAYLOAD_LEN 125
 
 signed char cc11xx_read_rssi(void);

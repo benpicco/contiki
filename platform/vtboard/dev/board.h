@@ -57,6 +57,9 @@
 #include "tivaware/inc/hw_memmap.h"
 #include "tivaware/inc/hw_gpio.h"
 #include "tivaware/inc/hw_sysctl.h"
+#include "tivaware/inc/hw_types.h"
+#include "tivaware/inc/hw_ssi.h"
+#include "tivaware/inc/hw_ints.h"
 
 #include "cpu.h"
 
@@ -72,10 +75,8 @@
  * @{
  */
 /*---------------------------------------------------------------------------*/
-#define LEDS_D1_RED    1 /**< Red -> PF1 */
-#define LEDS_D1_GREEN  2 /**< Green -> PF3 */
-#define LEDS_D1_BLUE   4 /**< Blue -> PF2 */
-#define LEDS_D1_WHITE  7
+#define LEDS_D1_RED    6 /**< Red -> PF1 */
+#define LEDS_D1_GREEN  7 /**< Green -> PF3 */
 
 /* Notify various examples that we have LEDs */
 #define PLATFORM_HAS_LEDS        1
@@ -105,20 +106,20 @@
  * @{
  */
 /** BUTTON_SW1 -> PF4 */
-#define BUTTON_SW1_PIN         GPIO_PIN_4
-#define BUTTON_SW1_PORT        GPIO_PORTF_BASE
-#define BUTTON_SW1_PORT_NO     GPIO_F_NUM
-#define BUTTON_SW1_PIN_NO      4
-#define BUTTON_SW1_SYSCTL_PORT SYSCTL_PERIPH_GPIOF
-#define BUTTON_SW1_INT         INT_GPIOF
+#define BUTTON_SW1_PIN         GPIO_PIN_6
+#define BUTTON_SW1_PORT        GPIO_PORTC_BASE
+#define BUTTON_SW1_PORT_NO     GPIO_C_NUM
+#define BUTTON_SW1_PIN_NO      7
+#define BUTTON_SW1_SYSCTL_PORT SYSCTL_PERIPH_GPIOC
+#define BUTTON_SW1_INT         INT_GPIOC
 
 /** BUTTON_SW2 -> PF0 */
-#define BUTTON_SW2_PIN         GPIO_PIN_0
-#define BUTTON_SW2_PORT        GPIO_PORTF_BASE
-#define BUTTON_SW2_PORT_NO     GPIO_F_NUM
-#define BUTTON_SW2_PIN_NO      0
-#define BUTTON_SW2_SYSCTL_PORT SYSCTL_PERIPH_GPIOF
-#define BUTTON_SW2_INT         INT_GPIOF
+#define BUTTON_SW2_PIN         GPIO_PIN_7
+#define BUTTON_SW2_PORT        GPIO_PORTC_BASE
+#define BUTTON_SW2_PORT_NO     GPIO_C_NUM
+#define BUTTON_SW2_PIN_NO      7
+#define BUTTON_SW2_SYSCTL_PORT SYSCTL_PERIPH_GPIOC
+#define BUTTON_SW2_INT         INT_GPIOC
 
 /* Notify various examples that we have Buttons */
 #define PLATFORM_HAS_BUTTON      1
@@ -128,7 +129,7 @@
  * \name Device string used on startup
  * @{
  */
-#define BOARD_STRING "TI Tiva C Series EK-TM4C123GXL"
+#define BOARD_STRING "volatiles prototype 4x4"
 /** @} */
 
 #endif /* BOARD_H_ */
