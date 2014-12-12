@@ -7,10 +7,38 @@
 /************************************/
 #include "platform-conf.h"
 
+#define WITH_UIP6 1
+
+#ifndef NETSTACK_CONF_MAC
+/* #define NETSTACK_CONF_MAC     csma_driver */
+#define NETSTACK_CONF_MAC     nullmac_driver
+#endif /* NETSTACK_CONF_MAC */
+
+#ifndef NETSTACK_CONF_RDC
+/* #define NETSTACK_CONF_RDC     contikimac_driver */
+#define NETSTACK_CONF_RDC     nullrdc_driver
+#endif /* NETSTACK_CONF_RDC */
+
+#ifndef NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE
 #define NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE 8
-#define NULLRDC_CONF_802154_AUTOACK 1
+#endif /* NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE */
+
+#ifndef NETSTACK_CONF_RADIO
+#define NETSTACK_CONF_RADIO   cc2520_driver
+#endif /* NETSTACK_CONF_RADIO */
+
+#ifndef NETSTACK_CONF_FRAMER
 #define NETSTACK_CONF_FRAMER  framer_802154
-//#define NETSTACK_CONF_NETWORK sicslowpan_driver
+#endif /* NETSTACK_CONF_FRAMER */
+
+#ifndef CC2520_CONF_AUTOACK
+#define CC2520_CONF_AUTOACK              1
+#endif /* CC2520_CONF_AUTOACK */
+
+#define NULLRDC_CONF_802154_AUTOACK      1
+
+/* Network setup for IPv6 */
+#define NETSTACK_CONF_NETWORK sicslowpan_driver
 
 //#ifndef CC2420_CONF_AUTOACK
 //#define CC2420_CONF_AUTOACK              1
@@ -22,7 +50,6 @@
 
 #if WITH_UIP6
 /* Network setup for IPv6 */
-#define NETSTACK_CONF_NETWORK sicslowpan_driver
 
 /* Specify a minimum packet size for 6lowpan compression to be
    enabled. This is needed for ContikiMAC, which needs packets to be

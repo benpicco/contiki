@@ -3,7 +3,7 @@
 #define __PLATFORM_CONF_H__
 
 /* CPU target speed in Hz; works fine at 8, 16, 18 MHz but not higher. */
-#define F_CPU 16000000uL
+#define F_CPU 80000000uL
 
 /* Our clock resolution, this is the same as Unix HZ. */
 #define CLOCK_CONF_SECOND 128UL
