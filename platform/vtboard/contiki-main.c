@@ -22,6 +22,7 @@
 #include "dev/tivaware/driverlib/tm4c_ssi.h"
 #include "dev/tivaware/driverlib/tm4c_cpu.h"
 #include "dev/tivaware/driverlib/tm4c_sysctl.h"
+#include "cpu/tiva-c/dev/tivaware/inc/tiva_rom.h"
 
 static void
 print_processes(struct process * const processes[])
@@ -36,11 +37,12 @@ print_processes(struct process * const processes[])
 }
 
 void splx(int saved) {
-  ;
+  if (!saved)
+    ROM_IntMasterEnable();
 }
 
 int splhigh(void) {
-  return 0;
+  return ROM_IntMasterDisable() ? 1 : 0;
 }
 
 void GPIOPinUnlockGPIO(uint32_t ui32Port, uint8_t ui8Pins) {
@@ -89,15 +91,18 @@ int main(void)
   uart_init();
   uart_set_input(serial_line_input_byte);
   printf("Initialising\n");
-  
+
   gpio_init();
   leds_init();
   clock_init();
+  watchdog_init();
   process_init();
   process_start(&etimer_process, NULL);
 
+  rtimer_init();
+
   cc2520_init();
-  
+
   uint8_t longaddr[8] = {0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8};
   uint16_t shortaddr = 0xfefe;
 
@@ -106,9 +111,7 @@ int main(void)
          longaddr[4], longaddr[5], longaddr[6], longaddr[7]);
 
   cc2520_set_pan_addr(0x2520, shortaddr, longaddr);
-  
   cc2520_set_channel(RF_CHANNEL);
-
 
 #if NETSTACK_CONF_WITH_IPV6
   /* memcpy(&uip_lladdr.addr, ds2411_id, sizeof(uip_lladdr.addr)); */
@@ -183,7 +186,7 @@ int main(void)
 
     /* Idle! */
     /* Stop processor clock */
-    /* asm("wfi"::); */ 
+    /* asm("wfi"::); */
   }
   return 0;
 }
