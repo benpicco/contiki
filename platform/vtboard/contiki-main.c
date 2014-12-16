@@ -28,7 +28,7 @@
 #include "cpu/tiva-c/dev/tivaware/inc/tiva_rom.h"
 #include "cpu/tiva-c/dev/gpio.h"
 
-uint32_t node_id;
+uint16_t node_id;
 
 static void
 set_rime_addr(void)
@@ -147,7 +147,9 @@ int main(void)
 
   rtimer_init();
 
-  FlashUserGet(&node_id, NULL);
+  uint32_t tmp;
+  FlashUserGet(&tmp, NULL);
+  node_id = tmp & 0xffff;
 
   set_rime_addr();
 
