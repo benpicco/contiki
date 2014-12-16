@@ -35,7 +35,7 @@
 // #define CC2520_CONF_AUTOACK              1
 // #endif /* CC2520_CONF_AUTOACK */
 
-#define NULLRDC_CONF_802154_AUTOACK      1
+#define NULLRDC_CONF_802154_AUTOACK      0
 
 /* Network setup for IPv6 */
 #define NETSTACK_CONF_NETWORK sicslowpan_driver
