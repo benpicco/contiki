@@ -45,7 +45,7 @@
 #include "contiki-net.h"
 #include "httpd-ws.h"
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)
 #else

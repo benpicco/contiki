@@ -38,7 +38,7 @@
 #define PRINTA(...)
 #endif
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #define PRINTD(FORMAT,args...) printf_P(PSTR(FORMAT),##args)
 #else

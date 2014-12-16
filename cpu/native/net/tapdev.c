@@ -74,7 +74,7 @@ static unsigned long lasttime;
 
 #define BUF ((struct uip_eth_hdr *)&uip_buf[0])
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #define PRINTF(...) fprintf(stderr, __VA_ARGS__)
 #else

@@ -31,9 +31,9 @@
 #define NETSTACK_CONF_FRAMER  framer_802154
 #endif /* NETSTACK_CONF_FRAMER */
 
-#ifndef CC2520_CONF_AUTOACK
-#define CC2520_CONF_AUTOACK              1
-#endif /* CC2520_CONF_AUTOACK */
+// #ifndef CC2520_CONF_AUTOACK
+// #define CC2520_CONF_AUTOACK              1
+// #endif /* CC2520_CONF_AUTOACK */
 
 #define NULLRDC_CONF_802154_AUTOACK      1
 
@@ -104,7 +104,7 @@
 #define PACKETBUF_CONF_ATTRS_INLINE 1
 
 #ifndef RF_CHANNEL
-#define RF_CHANNEL              26
+#define RF_CHANNEL              20
 #endif /* RF_CHANNEL */
 
 #define CONTIKIMAC_CONF_BROADCAST_RATE_LIMIT 0

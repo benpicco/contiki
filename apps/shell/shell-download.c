@@ -53,7 +53,7 @@
 #define RUCB_CHANNEL (SHELL_RIME_CHANNEL_DOWNLOAD+1)
 #define MAX_RETRANSMISSIONS 8
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)

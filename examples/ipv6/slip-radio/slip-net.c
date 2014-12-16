@@ -39,7 +39,7 @@
 #define SLIP_ESC_END 0334
 #define SLIP_ESC_ESC 0335
 
-#define DEBUG 0
+#define DEBUG 1
 
 /*---------------------------------------------------------------------------*/
 void

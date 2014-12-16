@@ -59,7 +59,7 @@
  * ...
  */
 #define DEBUGLOGIC 0
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUGLOGIC
 struct httpd_state *sg;
 #define uip_mss(...) 512

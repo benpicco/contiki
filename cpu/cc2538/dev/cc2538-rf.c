@@ -70,7 +70,7 @@
 #define UDMA_RX_SIZE_THRESHOLD 3
 /*---------------------------------------------------------------------------*/
 #include <stdio.h>
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)
 #else

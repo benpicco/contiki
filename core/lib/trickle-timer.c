@@ -47,7 +47,7 @@
 #include "sys/cc.h"
 #include "lib/random.h"
 /*---------------------------------------------------------------------------*/
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG
 #include <stdio.h>

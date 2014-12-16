@@ -9,6 +9,7 @@
 #include <dev/serial-line.h>
 #include <dev/uart.h>
 #include <dev/leds.h>
+#include <dev/watchdog.h>
 
 #include <ip/uip.h>
 #include <net/queuebuf.h>
@@ -22,7 +23,10 @@
 #include "dev/tivaware/driverlib/tm4c_ssi.h"
 #include "dev/tivaware/driverlib/tm4c_cpu.h"
 #include "dev/tivaware/driverlib/tm4c_sysctl.h"
+#include "dev/tivaware/driverlib/tm4c_interrupt.h"
+#include "dev/tivaware/driverlib/tm4c_flash.h"
 #include "cpu/tiva-c/dev/tivaware/inc/tiva_rom.h"
+#include "cpu/tiva-c/dev/gpio.h"
 
 static void
 print_processes(struct process * const processes[])
@@ -37,11 +41,15 @@ print_processes(struct process * const processes[])
 }
 
 void splx(int saved) {
-  if (!saved)
+  if (!saved) {
+    printf("enable interrups\n");
     ROM_IntMasterEnable();
+  } else
+    printf("interrups remain disabled\n");
 }
 
 int splhigh(void) {
+  printf("disable interrups\n");
   return ROM_IntMasterDisable() ? 1 : 0;
 }
 
@@ -80,6 +88,8 @@ void cc2520_arch_init(void) {
   GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_3);
 
   GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, PIN(6) | PIN(7));
+
+  gpio_register_callback(cc2520_interrupt, PORT(E), PIN(2));
 }
 
 uint32_t sys_clock = 0;
@@ -104,13 +114,15 @@ int main(void)
   cc2520_init();
 
   uint8_t longaddr[8] = {0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8};
-  uint16_t shortaddr = 0xfefe;
 
-  printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x ",
-         longaddr[0], longaddr[1], longaddr[2], longaddr[3],
-         longaddr[4], longaddr[5], longaddr[6], longaddr[7]);
+  uint32_t _mac;
+  FlashUserGet(&_mac, NULL);
 
-  cc2520_set_pan_addr(0x2520, shortaddr, longaddr);
+  uint16_t shortaddr = _mac & 0xFFFF;
+
+  printf("MAC %x\n", shortaddr);
+
+  cc2520_set_pan_addr(0x2520, shortaddr, NULL);
   cc2520_set_channel(RF_CHANNEL);
 
 #if NETSTACK_CONF_WITH_IPV6
@@ -179,6 +191,8 @@ int main(void)
   printf("Processes running\n");
 
   print_processes(autostart_processes);
+
+//  IntTrigger(INT_GPIOE);
 
   while(1) {
     do {

@@ -257,7 +257,7 @@ fault_handler(void)
 void
 nmi_handler(void)
 {
-  reset_handler();
+  printf("*** NMI handler ***\n");
   while(1);
 }
 /*---------------------------------------------------------------------------*/

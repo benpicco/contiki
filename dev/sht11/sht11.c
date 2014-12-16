@@ -38,7 +38,7 @@
 #include "dev/sht11/sht11.h"
 #include "sht11-arch.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG
 #include <stdio.h>

@@ -42,7 +42,7 @@
 #include "loader/symtab.h"
 
 #define ANNOUNCE_BOOT 0    //adds about 600 bytes to program size
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #define PRINTF(FORMAT,args...) printf_P(PSTR(FORMAT),##args)
 #define PRINTSHORT(FORMAT,args...) printf_P(PSTR(FORMAT),##args)

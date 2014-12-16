@@ -53,7 +53,7 @@
 #include "cc2430_sfr.h"
 #include "sys/energest.h"
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)

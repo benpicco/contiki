@@ -160,7 +160,11 @@ gpio_port_e_isr()
 
   lpm_exit();
 
+  printf("\n!!!!!!! - %lx\n\n", HWREG(GPIO_PORTE_BASE | GPIO_O_MIS));
+
   notify(HWREG(GPIO_PORTE_BASE | GPIO_O_MIS), GPIO_E_NUM);
+
+  cc2520_interrupt();
 
   HWREG(GPIO_PORTE_BASE | GPIO_O_ICR) = 0xFF;
 

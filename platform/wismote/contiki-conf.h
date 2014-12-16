@@ -5,6 +5,8 @@
 
 #include "platform-conf.h"
 
+#define NETSTACK_CONF_WITH_IPV6 1
+
 #ifndef NETSTACK_CONF_MAC
 /* #define NETSTACK_CONF_MAC     csma_driver */
 #define NETSTACK_CONF_MAC     nullmac_driver
@@ -53,8 +55,6 @@
 #else /* NETSTACK_CONF_WITH_IPV6 */
 
 /* Network setup for non-IPv6 (rime). */
-
-#define NETSTACK_CONF_NETWORK rime_driver
 
 #define COLLECT_CONF_ANNOUNCEMENTS       1
 #define CXMAC_CONF_ANNOUNCEMENTS         0

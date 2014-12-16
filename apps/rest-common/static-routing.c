@@ -9,7 +9,7 @@
 
 #if !defined (CONTIKI_TARGET_MINIMAL_NET) /* Any other targets will be added here (&& ! defined (OTHER))*/
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)

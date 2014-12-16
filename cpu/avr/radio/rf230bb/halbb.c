@@ -624,7 +624,7 @@ extern hal_rx_frame_t rxframe[RF230_CONF_RX_BUFFERS];
 extern uint8_t rxframe_head,rxframe_tail;
 
 /* rf230interruptflag can be printed in the main idle loop for debugging */
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 volatile char rf230interruptflag;
 #define INTERRUPTDEBUG(arg) rf230interruptflag=arg

@@ -46,7 +46,7 @@
 
 #include "cfs-coffee-arch.h"
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(FORMAT,args...) printf_P(PSTR(FORMAT),##args)

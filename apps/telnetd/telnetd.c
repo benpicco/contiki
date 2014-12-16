@@ -83,7 +83,7 @@ static struct telnetd_state s;
 #define TELNET_DO    253
 #define TELNET_DONT  254
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)

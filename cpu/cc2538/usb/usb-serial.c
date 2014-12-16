@@ -55,7 +55,7 @@
 
 #include <stdint.h>
 /*---------------------------------------------------------------------------*/
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG
 #include <stdio.h>

@@ -61,7 +61,7 @@
 #include "ieee-15-4-manager.h"
 
 /* Macros */
-#define DEBUG 0
+#define DEBUG 1
 #define MAX_EVENTS 10
 
 #if DEBUG

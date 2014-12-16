@@ -83,7 +83,8 @@ typedef unsigned long clock_time_t;
 #define CC2520_FIFOP_IS_1 (!!(GPIO_PIN_REG(PORT(E), PIN(2))))
 #define CC2520_FIFO_IS_1  (!!(GPIO_PIN_REG(PORT(E), PIN(1))))
 #define CC2520_CCA_IS_1   (!!(GPIO_PIN_REG(PORT(E), PIN(3))))
-#define CC2520_SFD_IS_1   (!!(GPIO_PIN_REG(PORT(E), PIN(3))))
+/* receiving packet */
+#define CC2520_SFD_IS_1   (!(GPIO_PIN_REG(PORT(E), PIN(3))))
 
 /* The CC2520 reset pin. */
 #define SET_RESET_INACTIVE()   (GPIO_PIN_REG(PORT(D), PIN(6)) = PIN(6))
