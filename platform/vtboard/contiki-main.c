@@ -28,6 +28,42 @@
 #include "cpu/tiva-c/dev/tivaware/inc/tiva_rom.h"
 #include "cpu/tiva-c/dev/gpio.h"
 
+uint32_t node_id;
+
+static void
+set_rime_addr(void)
+{
+  linkaddr_t n_addr;
+  int i;
+
+  memset(&n_addr, 0, sizeof(linkaddr_t));
+
+  //	Set node address
+#if NETSTACK_CONF_WITH_IPV6
+  //memcpy(addr.u8, ds2411_id, sizeof(addr.u8));
+  n_addr.u8[7] = node_id & 0xff;
+  n_addr.u8[6] = node_id >> 8;
+#else
+ /* if(node_id == 0) {
+    for(i = 0; i < sizeof(linkaddr_t); ++i) {
+      addr.u8[i] = ds2411_id[7 - i];
+    }
+  } else {
+    addr.u8[0] = node_id & 0xff;
+    addr.u8[1] = node_id >> 8;
+  }*/
+  n_addr.u8[0] = node_id & 0xff;
+  n_addr.u8[1] = node_id >> 8;
+#endif
+
+  linkaddr_set_node_addr(&n_addr);
+  printf("Rime started with address ");
+  for(i = 0; i < sizeof(n_addr.u8) - 1; i++) {
+    printf("%d.", n_addr.u8[i]);
+  }
+  printf("%d\n", n_addr.u8[i]);
+}
+
 static void
 print_processes(struct process * const processes[])
 {
@@ -111,23 +147,39 @@ int main(void)
 
   rtimer_init();
 
+  FlashUserGet(&node_id, NULL);
+
+  set_rime_addr();
+
   cc2520_init();
 
-  uint8_t longaddr[8] = {0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8};
+  uint8_t longaddr[8];
+  uint16_t shortaddr;
 
-  uint32_t _mac;
-  FlashUserGet(&_mac, NULL);
+  shortaddr = (linkaddr_node_addr.u8[0] << 8) +
+    linkaddr_node_addr.u8[1];
+  memset(longaddr, 0, sizeof(longaddr));
+  linkaddr_copy((linkaddr_t *)&longaddr, &linkaddr_node_addr);
 
-  uint16_t shortaddr = _mac & 0xFFFF;
+  printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x ",
+         longaddr[0], longaddr[1], longaddr[2], longaddr[3],
+         longaddr[4], longaddr[5], longaddr[6], longaddr[7]);
 
-  printf("MAC %x\n", shortaddr);
+  cc2520_set_pan_addr(IEEE802154_PANID, shortaddr, longaddr);
 
-  cc2520_set_pan_addr(0x2520, shortaddr, NULL);
   cc2520_set_channel(RF_CHANNEL);
+
+  printf(CONTIKI_VERSION_STRING " started. ");
+  if(node_id > 0) {
+    printf("Node id is set to %u.\n", node_id);
+  } else {
+    printf("Node id is not set.\n");
+  }
 
 #if NETSTACK_CONF_WITH_IPV6
   /* memcpy(&uip_lladdr.addr, ds2411_id, sizeof(uip_lladdr.addr)); */
-  memcpy(&uip_lladdr.addr, &longaddr, 8);
+  memcpy(&uip_lladdr.addr, linkaddr_node_addr.u8,
+         UIP_LLADDR_LEN > LINKADDR_SIZE ? LINKADDR_SIZE : UIP_LLADDR_LEN);
 
   /* Setup nullmac-like MAC for 802.15.4 */
 /*   sicslowpan_init(sicslowmac_init(&cc2520_driver)); */
