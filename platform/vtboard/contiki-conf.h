@@ -51,9 +51,7 @@
    enabled. This is needed for ContikiMAC, which needs packets to be
    larger than a specified size, if no ContikiMAC header should be
    used. */
-#define SICSLOWPAN_CONF_COMPRESSION_THRESHOLD 0
-//#define SICSLOWPAN_CONF_MAC_MAX_PAYLOAD        40
-#define CONTIKIMAC_CONF_WITH_CONTIKIMAC_HEADER 0
+#define SICSLOWPAN_CONF_COMPRESSION_THRESHOLD 63
 
 #define CXMAC_CONF_ANNOUNCEMENTS         0
 #define XMAC_CONF_ANNOUNCEMENTS          0
@@ -90,9 +88,9 @@
 #endif /* TIMESYNCH_CONF_ENABLED */
 
 #if TIMESYNCH_CONF_ENABLED
-/* CC2420 SDF timestamps must be on if timesynch is enabled. */
-#undef CC2420_CONF_SFD_TIMESTAMPS
-#define CC2420_CONF_SFD_TIMESTAMPS       1
+/* CC2520 SDF timestamps must be on if timesynch is enabled. */
+#undef CC2520_CONF_SFD_TIMESTAMPS
+#define CC2520_CONF_SFD_TIMESTAMPS       1
 #endif /* TIMESYNCH_CONF_ENABLED */
 
 #endif /* NETSTACK_CONF_WITH_IPV6 */
@@ -135,15 +133,12 @@
 
 #ifdef NETSTACK_CONF_WITH_IPV6
 
-#define RIMEADDR_CONF_SIZE              8
+#define LINKADDR_CONF_SIZE              8
 
 #define UIP_CONF_LL_802154              1
 #define UIP_CONF_LLH_LEN                0
 
 #define UIP_CONF_ROUTER                 1
-#ifndef UIP_CONF_IPV6_RPL
-#define UIP_CONF_IPV6_RPL               1
-#endif /* UIP_CONF_IPV6_RPL */
 
 /* configure number of neighbors and routes */
 #ifndef NBR_TABLE_CONF_MAX_NEIGHBORS
@@ -157,7 +152,7 @@
 #define UIP_CONF_ND6_REACHABLE_TIME     600000
 #define UIP_CONF_ND6_RETRANS_TIMER      10000
 
-#define UIP_CONF_IPV6                   1
+#define NETSTACK_CONF_WITH_IPV6                   1
 #ifndef UIP_CONF_IPV6_QUEUE_PKT
 #define UIP_CONF_IPV6_QUEUE_PKT         0
 #endif /* UIP_CONF_IPV6_QUEUE_PKT */
@@ -178,23 +173,7 @@
 #define SICSLOWPAN_CONF_COMPRESSION             SICSLOWPAN_COMPRESSION_HC06
 #ifndef SICSLOWPAN_CONF_FRAG
 #define SICSLOWPAN_CONF_FRAG                    1
-
-/* Unit: 1/16th second. 4 => 0.25s timeout */
-#ifndef SICSLOWPAN_CONF_MAXAGE
-#define SICSLOWPAN_CONF_MAXAGE                  4
-#endif /* SICSLOWPAN_CONF_MAXAGE */
-
-#if (MIST_CONF_NETSTACK & MIST_CONF_DROWSIE_MULTICHANNEL)
-/* We need to increase the fragmentation timeout, as the multichannel protocol may transmit
- * the same fragment on two channels, causing up to 0.6s delay inbetween fragments. */
-#ifdef SICSLOWPAN_CONF_MAXAGE
-#if SICSLOWPAN_CONF_MAXAGE < 12
-#undef SICSLOWPAN_CONF_MAXAGE
-#define SICSLOWPAN_CONF_MAXAGE                  12
-#endif /* SICSLOWPAN_CONF_MAXAGE < 12 */
-#endif /* SICSLOWPAN_CONF_MAXAGE */
-#endif /* (MIST_CONF_NETSTACK & MIST_CONF_DROWSIE_MULTICHANNEL) */
-
+#define SICSLOWPAN_CONF_MAXAGE                  8
 #endif /* SICSLOWPAN_CONF_FRAG */
 #define SICSLOWPAN_CONF_CONVENTIONAL_MAC	1
 #define SICSLOWPAN_CONF_MAX_ADDR_CONTEXTS       2
@@ -227,39 +206,7 @@
 #define UIP_CONF_PINGADDRCONF    0
 #define UIP_CONF_LOGGING         0
 
-/* include the project config */
-/* PROJECT_CONF_H might be defined in the project Makefile */
-#ifdef PROJECT_CONF_H
-#include PROJECT_CONF_H
-#endif /* PROJECT_CONF_H */
-
-// #include "mist-default-conf.h"
-
-#if ((MIST_CONF_NETSTACK) & MIST_CONF_AES)
-#ifndef NETSTACK_AES_KEY
-#define NETSTACK_AES_KEY "thingsquare mist" /* 16 bytes */
-#define NETSTACK_AES_KEY_DEFAULT 1
-#endif /* NETSTACK_AES_KEY */
-#endif /* ((MIST_CONF_NETSTACK) & MIST_CONF_AES) */
-
-#define CONTIKI_TARGET_MIST_EXP5438 1
-
-#define RIMESTATS_CONF_ON 1
-#define RIMESTATS_CONF_ENABLED 1
-/*************************************/
-
-
-
-/* Compiler configuration and platform-specific type definitions */
-//Define in platform.h
-//#define CLOCK_CONF_SECOND 128
-
-#define TARGET_IS_BLIZZARD_RA3
-#define PART_TM4C123GH6PM
-
-/* Compiler configurations */
-#define CCIF
-#define CLIF
+#define UIP_CONF_TCP_SPLIT       0
 
 /* Platform typedefs */
 typedef uint32_t clock_time_t;
@@ -296,16 +243,14 @@ typedef uint32_t rtimer_clock_t;
 /* Turn off example-provided putchars */
 #define SLIP_BRIDGE_CONF_NO_PUTCHAR 1
 #define SLIP_RADIO_CONF_NO_PUTCHAR  1
-/*---------------------------------------------------------------------------*/
-/* board.h assumes that basic configuration is done */
-/* #include "board.h" */
-/*---------------------------------------------------------------------------*/
+
+#define TARGET_IS_BLIZZARD_RA3
+#define PART_TM4C123GH6PM
+
+/* include the project config */
+/* PROJECT_CONF_H might be defined in the project Makefile */
 #ifdef PROJECT_CONF_H
-//#include PROJECT_CONF_H
+#include PROJECT_CONF_H
 #endif /* PROJECT_CONF_H */
 
-#ifdef PLATFORM_CONF
-//#include PLATFORM_CONF
-#endif /* PLATFORM_CONF */
-
-#endif /* CONTIKI_CONF_H_ */
+#endif /* CONTIKI_CONF_H */

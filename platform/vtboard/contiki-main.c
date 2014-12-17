@@ -40,18 +40,10 @@ set_rime_addr(void)
 
   //	Set node address
 #if NETSTACK_CONF_WITH_IPV6
-  //memcpy(addr.u8, ds2411_id, sizeof(addr.u8));
   n_addr.u8[7] = node_id & 0xff;
   n_addr.u8[6] = node_id >> 8;
 #else
- /* if(node_id == 0) {
-    for(i = 0; i < sizeof(linkaddr_t); ++i) {
-      addr.u8[i] = ds2411_id[7 - i];
-    }
-  } else {
-    addr.u8[0] = node_id & 0xff;
-    addr.u8[1] = node_id >> 8;
-  }*/
+
   n_addr.u8[0] = node_id & 0xff;
   n_addr.u8[1] = node_id >> 8;
 #endif
@@ -173,7 +165,7 @@ int main(void)
 
   printf(CONTIKI_VERSION_STRING " started. ");
   if(node_id > 0) {
-    printf("Node id is set to %u.\n", node_id);
+    printf("Node id is set to %x.\n", node_id);
   } else {
     printf("Node id is not set.\n");
   }
