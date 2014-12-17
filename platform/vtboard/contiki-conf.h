@@ -7,8 +7,6 @@
 /************************************/
 #include "platform-conf.h"
 
-#define WITH_UIP6 1
-
 #ifndef NETSTACK_CONF_MAC
 /* #define NETSTACK_CONF_MAC     csma_driver */
 #define NETSTACK_CONF_MAC     nullmac_driver
@@ -37,9 +35,6 @@
 
 #define NULLRDC_CONF_802154_AUTOACK      0
 
-/* Network setup for IPv6 */
-#define NETSTACK_CONF_NETWORK sicslowpan_driver
-
 //#ifndef CC2420_CONF_AUTOACK
 //#define CC2420_CONF_AUTOACK              1
 //#endif /* CC2420_CONF_AUTOACK */
@@ -48,8 +43,9 @@
 //#define CC2520_CONF_AUTOACK              1
 //#endif /* CC2520_CONF_AUTOACK */
 
-#if WITH_UIP6
+#if NETSTACK_CONF_WITH_IPV6
 /* Network setup for IPv6 */
+#define NETSTACK_CONF_NETWORK sicslowpan_driver
 
 /* Specify a minimum packet size for 6lowpan compression to be
    enabled. This is needed for ContikiMAC, which needs packets to be
@@ -66,7 +62,7 @@
 #define QUEUEBUF_CONF_NUM                8
 #endif
 
-#else /* WITH_UIP6 */
+#else /* NETSTACK_CONF_WITH_IPV6 */
 
 /* Network setup for non-IPv6 (rime). */
 
@@ -99,7 +95,7 @@
 #define CC2420_CONF_SFD_TIMESTAMPS       1
 #endif /* TIMESYNCH_CONF_ENABLED */
 
-#endif /* WITH_UIP6 */
+#endif /* NETSTACK_CONF_WITH_IPV6 */
 
 #define PACKETBUF_CONF_ATTRS_INLINE 1
 
@@ -137,7 +133,7 @@
 #define PROCESS_CONF_STATS 1
 /*#define PROCESS_CONF_FASTPOLL    4*/
 
-#ifdef WITH_UIP6
+#ifdef NETSTACK_CONF_WITH_IPV6
 
 #define RIMEADDR_CONF_SIZE              8
 
@@ -205,10 +201,10 @@
 #ifndef SICSLOWPAN_CONF_MAX_MAC_TRANSMISSIONS
 #define SICSLOWPAN_CONF_MAX_MAC_TRANSMISSIONS   5
 #endif /* SICSLOWPAN_CONF_MAX_MAC_TRANSMISSIONS */
-#else /* WITH_UIP6 */
+#else /* NETSTACK_CONF_WITH_IPV6 */
 #define UIP_CONF_IP_FORWARD      1
 #define UIP_CONF_BUFFER_SIZE     180
-#endif /* WITH_UIP6 */
+#endif /* NETSTACK_CONF_WITH_IPV6 */
 
 #define UIP_CONF_ICMP_DEST_UNREACH 1
 
