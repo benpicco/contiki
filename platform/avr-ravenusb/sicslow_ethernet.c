@@ -241,7 +241,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG
 #define PRINTF(FORMAT,args...) printf_P(PSTR(FORMAT),##args)
 #else

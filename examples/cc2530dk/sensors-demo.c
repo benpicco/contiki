@@ -66,7 +66,7 @@
 #include "dev/button-sensor.h"
 #include "dev/adc-sensor.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG
 #include <stdio.h>

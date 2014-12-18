@@ -51,7 +51,7 @@
  *
  */
 
-#define DEBUG 1        //Making this 1 will slightly alter command timings
+#define DEBUG 0        //Making this 1 will slightly alter command timings
 #if DEBUG
 #define PRINTF(FORMAT,args...) printf_P(PSTR(FORMAT),##args)
 #else

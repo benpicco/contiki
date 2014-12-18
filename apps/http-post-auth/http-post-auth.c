@@ -64,7 +64,7 @@ struct http_post_auth_state {
 struct http_post_auth_state conn;
 
 #ifndef DEBUG
-#define DEBUG 1
+#define DEBUG 0
 #endif
 #if DEBUG
 #include <stdio.h>

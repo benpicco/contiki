@@ -49,7 +49,7 @@
 /* It seems like there normally is an offset of some degrees for the tmp102 */
 #define TMP102_OFFSET -150
 
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)

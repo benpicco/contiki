@@ -41,7 +41,7 @@
 #include <getopt.h>
 #include <ftdi.h>
 
-#define DEBUG 1
+#define DEBUG 0
 
 #define low(x)  (1 << x)
 #define high(x) (1 << (x + 8))

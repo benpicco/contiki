@@ -46,7 +46,7 @@
 #include "dev/m25p16.h"
 #include "dev/n740.h"
 
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG
 #include <stdio.h>
 #include "debug.h"

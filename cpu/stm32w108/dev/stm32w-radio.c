@@ -59,7 +59,7 @@
 #include "net/rime/rimestats.h"
 #include "sys/rtimer.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 #include "dev/leds.h"
 #define LED_ACTIVITY 0

@@ -97,7 +97,7 @@
 #endif /* NETSTACK_AES_KEY */
 
 /*---------------------------------------------------------------------------*/
-#define DEBUG 1
+#define DEBUG 0
 
 #if STARTUP_CONF_VERBOSE
 #define PRINTF(...) printf(__VA_ARGS__)

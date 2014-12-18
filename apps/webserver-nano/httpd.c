@@ -51,7 +51,7 @@
 #include "cfs-coffee-arch.h"
 #endif
 
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG
 #define PRINTD PRINTA
 #else

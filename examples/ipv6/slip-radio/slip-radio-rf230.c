@@ -38,7 +38,7 @@
 #include "radio/rf230bb/rf230bb.h"
 
 
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(FORMAT,args...) printf_P(PSTR(FORMAT),##args)
