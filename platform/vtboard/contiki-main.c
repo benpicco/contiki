@@ -117,7 +117,7 @@ void cc2520_arch_init(void) {
 
   GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, PIN(6) | PIN(7));
 
-  gpio_register_callback(cc2520_interrupt, PORT(E), PIN(2));
+  gpio_register_callback(cc2520_interrupt, GPIO_E_NUM, 2);
 }
 
 uint32_t sys_clock = 0;

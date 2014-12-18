@@ -160,11 +160,7 @@ gpio_port_e_isr()
 
   lpm_exit();
 
-  printf("\n!!!!!!! - %lx\n\n", HWREG(GPIO_PORTE_BASE | GPIO_O_MIS));
-
   notify(HWREG(GPIO_PORTE_BASE | GPIO_O_MIS), GPIO_E_NUM);
-
-  cc2520_interrupt();
 
   HWREG(GPIO_PORTE_BASE | GPIO_O_ICR) = 0xFF;
 
@@ -223,7 +219,7 @@ gpio_port_j_isr()
   ENERGEST_ON(ENERGEST_TYPE_IRQ);
 
   lpm_exit();
-  
+
   notify(HWREG(GPIO_PORTJ_BASE | GPIO_O_MIS), GPIO_J_NUM);
 
   HWREG(GPIO_PORTJ_BASE | GPIO_O_ICR) = 0xFF;
