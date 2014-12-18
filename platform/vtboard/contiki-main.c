@@ -134,6 +134,7 @@ int main(void)
   leds_init();
   clock_init();
   watchdog_init();
+  xmem_init();
   process_init();
   process_start(&etimer_process, NULL);
 
