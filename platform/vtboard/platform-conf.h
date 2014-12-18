@@ -51,7 +51,6 @@ typedef unsigned long clock_time_t;
 
 #define CFS_RAM_CONF_SIZE 4096
 
-
 /*
  * SPI bus configuration for the vtboard
  */
@@ -71,7 +70,19 @@ typedef unsigned long clock_time_t;
 /* USART0 Tx buffer ready? */
 #define SPI_WAITFORTxREADY()	while(!(HWREG(SPI_BASE + SSI_O_SR) & SSI_SR_TNF))
 /* Clear Rx buffer */
-#define SPI_FLUSH()				while((HWREG(SPI_BASE + SSI_O_SR) & SSI_SR_RNE)) { SPI_RXBUF; }
+#define SPI_FLUSH()		do {while((HWREG(SPI_BASE + SSI_O_SR) & SSI_SR_RNE)) { SPI_RXBUF; }} while (0)
+
+ /* ENABLE CSn (active low) */
+#define SPI_ENABLE(port, pin)     do { SPI_FLUSH(); GPIO_PIN_REG(port, pin) = 0; } while (0)
+ /* DISABLE CSn (active low) */
+#define SPI_DISABLE(port, pin)    do { SPI_WAITFOREOTx(); GPIO_PIN_REG(port, pin) = pin; } while(0)
+
+/*
+ * SPI bus - flash pin configuration
+ */
+
+#define SPI_FLASH_ENABLE()  SPI_ENABLE(PORT(D), PIN(1))
+#define SPI_FLASH_DISABLE() SPI_DISABLE(PORT(D), PIN(1))
 
 /*
  * SPI bus - CC2520 pin configuration.
@@ -112,9 +123,9 @@ typedef unsigned long clock_time_t;
  */
 
  /* ENABLE CSn (active low) */
-#define CC2520_SPI_ENABLE()     do { SPI_FLUSH(); GPIO_PIN_REG(PORT(F), PIN(3)) = 0; } while (0)
+#define CC2520_SPI_ENABLE()     SPI_ENABLE(PORT(F), PIN(3))
  /* DISABLE CSn (active low) */
-#define CC2520_SPI_DISABLE()    do { SPI_WAITFOREOTx(); GPIO_PIN_REG(PORT(F), PIN(3)) = PIN(3); } while(0)
+#define CC2520_SPI_DISABLE()    SPI_DISABLE(PORT(F), PIN(3))
 #define CC2520_SPI_IS_ENABLED() GPIOPinRead(PORT(F), PIN(3))
 
 #define NULLRDC_CONF_ACK_WAIT_TIME                RTIMER_SECOND / 500

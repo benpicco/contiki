@@ -6,17 +6,14 @@ endif
 
 CONTIKI_TARGET_DIRS = . dev apps net
 
-ARCH=i2c.c node-id.c sensors.c cfs-coffee.c \
-     cc2520.c cc2520-arch.c cc2520-arch-sfd.c \
-     sky-sensors.c uip-ipchksum.c \
-     uart1.c slip_uart1.c uart1-putchar.c
+ARCH=node-id.c sensors.c cfs-coffee.c cfs-xmem.c
 
 CONTIKI_TARGET_SOURCEFILES += leds.c
 CONTIKI_TARGET_SOURCEFILES += contiki-main.c node-id.c
 CONTIKI_TARGET_SOURCEFILES += sensors.c leds-arch.c ek-tm4c123gxl-sensors.c 
-CONTIKI_TARGET_SOURCEFILES += button-sensor.c
+CONTIKI_TARGET_SOURCEFILES += button-sensor.c xmem.c
 
-CONTIKI_TARGET_SOURCEFILES += $(ARCH_RADIO_SOURCES) $(UIPDRIVERS)
+CONTIKI_TARGET_SOURCEFILES += $(ARCH) $(ARCH_RADIO_SOURCES) $(UIPDRIVERS)
 
 TARGET_START_SOURCEFILES += startup-gcc.c
 TARGET_STARTFILES = ${addprefix $(OBJECTDIR)/,${call oname, $(TARGET_START_SOURCEFILES)}}
