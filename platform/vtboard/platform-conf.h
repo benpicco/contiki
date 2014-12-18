@@ -55,8 +55,6 @@ typedef unsigned long clock_time_t;
  * SPI bus configuration for the vtboard
  */
 
-#define SPI_BASE  SSI1_BASE
-
 #define GPIO_PIN_REG(port, pin)	(HWREG(port + (GPIO_O_DATA + (pin << 2))))
 
 /* SPI input/output registers. */

@@ -40,6 +40,24 @@
 
 
 #include "contiki.h"
+
+#include "dev/tivaware/driverlib/tm4c_ssi.h"
+#include "dev/tivaware/driverlib/tm4c_pin_map.h"
+#include "dev/tivaware/driverlib/tm4c_sysctl.h"
+
+#define SPI_BASE  SSI3_BASE
+
+#define FLASH_PERIPH                    SYSCTL_PERIPH_SSI3
+#define FLASH_PERIPH_GPIO               SYSCTL_PERIPH_GPIOD
+#define FLASH_SPI_BASE                  SSI3_BASE
+#define FLASH_GPIO_PORT_BASE            GPIO_PORTD_BASE
+#define FLASH_SPI_CLK                   GPIO_PD0_SSI3CLK
+#define FLASH_SPI_RX                    GPIO_PD2_SSI3RX
+#define FLASH_SPI_TX                    GPIO_PD3_SSI3TX
+// manual Chip Select, all other pins controlled by SPI
+#define FLASH_SPI_CS                    GPIO_PIN_1
+#define FLASH_SPI_PINS                  (GPIO_PIN_0 | GPIO_PIN_2 | GPIO_PIN_3)
+
 #include <stdio.h>
 #include <string.h>
 
@@ -65,6 +83,21 @@
 #define  SPI_FLASH_INS_DP          0xb9
 #define  SPI_FLASH_INS_RES         0xab
 /*---------------------------------------------------------------------------*/
+
+void flash_init(void) {
+  SysCtlPeripheralEnable(FLASH_PERIPH);
+  SysCtlPeripheralEnable(FLASH_PERIPH_GPIO);
+  GPIOPinTypeGPIOOutput(FLASH_GPIO_PORT_BASE, FLASH_SPI_CS); // manual CS
+  GPIOPinConfigure(FLASH_SPI_CLK);
+  GPIOPinConfigure(FLASH_SPI_RX);
+  GPIOPinConfigure(FLASH_SPI_TX);
+  GPIOPinTypeSSI(FLASH_GPIO_PORT_BASE, FLASH_SPI_PINS);
+  SSIConfigSetExpClk(FLASH_SPI_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, SysCtlClockGet() / 20, 8);
+  SSIEnable(FLASH_SPI_BASE);
+
+//  flash_cmd(CMD_WRSR, 0); // global unprotect
+}
+
 static void
 write_enable(void)
 {
@@ -146,6 +179,7 @@ xmem_init(void)
 {
   int s;
 
+  flash_init();
   /* Release from Deep Power-down */
   s = splhigh();
   SPI_FLASH_ENABLE();

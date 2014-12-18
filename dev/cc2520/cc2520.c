@@ -34,6 +34,8 @@
 
 #include "contiki.h"
 
+#define SPI_BASE  SSI1_BASE
+
 #include "dev/spi.h"
 #include "dev/cc2520/cc2520.h"
 #include "dev/cc2520/cc2520_const.h"
