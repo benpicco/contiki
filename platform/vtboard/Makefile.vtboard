@@ -22,7 +22,7 @@ CONTIKI_SOURCEFILES += $(CONTIKI_TARGET_SOURCEFILES)
 
 CLEAN += *.vtboard *.bin
 
-CFLAGS += -DTARGET_IS_BLIZZARD_RB1
+CFLAGS += -DTARGET_IS_BLIZZARD_RB1 -DPART_TM4C123GH6PM
 
 ifdef NODEID
 CFLAGS+=-DNODEID=$(NODEID)
@@ -49,8 +49,8 @@ endif
 CONTIKI_CPU=$(CONTIKI)/cpu/tiva-c
 include $(CONTIKI_CPU)/Makefile.tiva-c
 
-%.upload: %.hex
-	openocd --file /usr/share/openocd/scripts/board/ek-lm3s9b9x.cfg -c "program $< reset"
+%.flash: %.bin
+	openocd --file $(FIRMWARE_BASE)/openocd/volaProg.cfg -c "program $< reset"
 
 MODULES += core/net core/net/mac \
            core/net/mac/contikimac \
