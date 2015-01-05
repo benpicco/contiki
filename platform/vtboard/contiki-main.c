@@ -69,15 +69,11 @@ print_processes(struct process * const processes[])
 }
 
 void splx(int saved) {
-  if (!saved) {
-    printf("enable interrups\n");
+  if (!saved)
     ROM_IntMasterEnable();
-  } else
-    printf("interrups remain disabled\n");
 }
 
 int splhigh(void) {
-  printf("disable interrups\n");
   return ROM_IntMasterDisable() ? 1 : 0;
 }
 
