@@ -36,8 +36,8 @@
 
 MEMORY
 {
-    FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x00100000
-    SRAM (RWX) : ORIGIN = 0x20000000, LENGTH = 0x00040000 
+    FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 256K
+    SRAM (RWX) : ORIGIN = 0x20000000, LENGTH = 32K
 }
 
 SECTIONS
@@ -71,4 +71,9 @@ SECTIONS
         *(COMMON)
         _ebss = .;
     } > SRAM
+
+    /* heap section */
+    . = ALIGN(4);
+    _sheap = . ;
+    _eheap = ORIGIN(SRAM) + LENGTH(SRAM);
 }
