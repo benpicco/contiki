@@ -166,7 +166,7 @@ clock_delay_usec(uint16_t len)
   TimerEnable(TIMER0_BASE, TIMER_A);
 
   /* Poll raw interrupt status bit for completion. */
-  while(TimerIntStatus(TIMER0_BASE, false) & TIMER_TIMA_TIMEOUT);
+  while(!(TimerIntStatus(TIMER0_BASE, false) & TIMER_TIMA_TIMEOUT));
 }
 /*---------------------------------------------------------------------------*/
 /**
