@@ -15,7 +15,7 @@ ifndef LDSCRIPT
 LDSCRIPT = $(OBJECTDIR)/tiva-c.ld
 endif # LDSCRIPT
 
-CFLAGS += -Og -g3 -ggdb -mcpu=cortex-m4 -mthumb -mlittle-endian
+CFLAGS += -Og -g3 -ggdb -mcpu=cortex-m4 -mthumb -mlittle-endian -std=gnu99
 CFLAGS += -fshort-enums -fomit-frame-pointer -fno-strict-aliasing
 CFLAGS += -Wall -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 LDFLAGS += -mcpu=cortex-m4 -mthumb -nostartfiles
