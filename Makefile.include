@@ -239,6 +239,7 @@ endif
 ifndef CUSTOM_RULE_C_TO_OBJECTDIR_O
 $(OBJECTDIR)/%.o: %.c | $(OBJECTDIR)
 	$(TRACE_CC)
+	@mkdir -p $(@D)
 	$(Q)$(CC) $(CFLAGS) -MMD -c $< -o $@
 	@$(FINALIZE_DEPENDENCY)
 endif
